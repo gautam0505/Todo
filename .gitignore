@@ -3,6 +3,8 @@
 /.pnp
 .pnp.js
 
+screenshots/
+
 # Build outputs
 /dist
 /build
