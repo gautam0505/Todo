@@ -9,12 +9,17 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import React from "react";
 
-const CodeBlock = ({ children }: { children: string }) => {
+const CodeBlock = ({ children }: { children: React.ReactNode }) => {
   const [copied, setCopied] = useState(false);
 
+  const textToCopy = Array.isArray(children)
+    ? children.join("") // handles ["text", variable]
+    : String(children); // handles string | number | JSX
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(children);
+    navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -25,7 +30,9 @@ const CodeBlock = ({ children }: { children: string }) => {
       sx={{
         p: 1,
         backgroundColor: (theme) =>
-          theme.palette.mode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.05)",
+          theme.palette.mode === "dark"
+            ? "rgba(0,0,0,0.3)"
+            : "rgba(0,0,0,0.05)",
         fontFamily: "monospace",
         whiteSpace: "pre-wrap",
         wordBreak: "break-all",
@@ -53,28 +60,34 @@ const GithubTab = () => {
     <Stack spacing={2}>
       <Alert severity="error">
         <Typography variant="body2">
-          The error `remote origin already exists` occurs when you try to use `git remote add` for a
-          remote that is already configured.
+          The error `remote origin already exists` occurs when you try to use
+          `git remote add` for a remote that is already configured.
         </Typography>
       </Alert>
+
       <Typography variant="body1">
-        To fix this, you need to update the URL of your existing 'origin' remote.
+        To fix this, you need to update the URL of your existing 'origin'
+        remote.
       </Typography>
+
       <Box>
         <Typography variant="body2" gutterBottom>
-          1. Use the `set-url` command to change the remote's URL:
+          1. Use the `set-url` command to change the remote&apos;s URL:
         </Typography>
         <CodeBlock>git remote set-url origin {correctUrl}</CodeBlock>
       </Box>
+
       <Box>
         <Typography variant="body2" gutterBottom>
           2. Verify that the remote URL has been changed:
         </Typography>
         <CodeBlock>git remote -v</CodeBlock>
         <Typography variant="body2" sx={{ mt: 1 }}>
-          The output should now show your correct repository URL for both fetch and push.
+          The output should now show your correct repository URL for both fetch
+          and push.
         </Typography>
       </Box>
+
       <Box>
         <Typography variant="body2" gutterBottom>
           3. Now, you should be able to push your changes:
