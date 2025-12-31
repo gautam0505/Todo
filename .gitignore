@@ -1,30 +1,79 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Build outputs
+/dist
+/build
+/out
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# Editor directories and files
-!.vscode/extensions.json
-.vs
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Local PWA dist folder
-dev-dist
+# Coverage directory used by tools like istanbul
+/coverage
+/.nyc_output
 
 # Vite cache
-/.cache
+.cache/
+.temp/
+.tmp/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional ESLint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Optional REPL history
+.node_repl_history
+
+# lock files (keep only one)
+package-lock.json  # Keep if using npm
+# yarn.lock        # Remove comment if using yarn
+# pnpm-lock.yaml   # Remove comment if using pnpm
+
+# Local development files
+*.local
+dev-dist/
+
+# Editor configs
+.settings/
