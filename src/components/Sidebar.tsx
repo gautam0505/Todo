@@ -7,22 +7,16 @@ import {
   BugReportRounded,
   CategoryRounded,
   DeleteForeverRounded,
-  DownloadDoneRounded,
   Favorite,
   FavoriteRounded,
   FiberManualRecord,
   GetAppRounded,
   GitHub,
-  InstallDesktopRounded,
-  InstallMobileRounded,
-  IosShareRounded,
   Logout,
-  PhoneIphoneRounded,
   PhonelinkRounded,
   SettingsRounded,
   StarRounded,
   TaskAltRounded,
-  ThumbUpRounded,
 } from "@mui/icons-material";
 import {
   Dialog,
@@ -70,29 +64,7 @@ export const ProfileSidebar = () => {
   const theme = useTheme();
   const n = useNavigate();
 
-  useEffect(() => {
-    const fetchRepoInfo: () => Promise<void> = async () => {
-      const { repoData, branchData } = await fetchGitHubInfo();
-      setStars(repoData.stargazers_count);
-      setLastUpdate(branchData.commit.commit.committer.date);
-      setIssuesCount(repoData.open_issues_count);
-    };
-
-    const fetchBMC: () => Promise<void> = async () => {
-      // Fetch data from the Buy Me a Coffee API
-      const { supportersCount } = await fetchBMCInfo();
-      // In case BMC api fails
-      if (supportersCount > 0) {
-        setBmcSupporters(supportersCount);
-      } else {
-        console.error("No BMC supporters found.");
-      }
-    };
-
-    fetchBMC();
-    fetchRepoInfo();
-  }, []);
-
+ 
   const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
 
   useEffect(() => {
@@ -109,72 +81,6 @@ export const ProfileSidebar = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  interface BeforeInstallPromptEvent extends Event {
-    readonly platforms: ReadonlyArray<string>;
-    readonly userChoice: Promise<{
-      outcome: "accepted" | "dismissed";
-      platform: string;
-    }>;
-    prompt(): Promise<void>;
-  }
-
-  const [supportsPWA, setSupportsPWA] = useState<boolean>(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isAppInstalled, setIsAppInstalled] = useState<boolean>(false);
-
-  const [openInstalledDialog, setOpenInstalledDialog] = useState<boolean>(false);
-
-  useEffect(() => {
-    const beforeInstallPromptHandler = (e: Event) => {
-      e.preventDefault();
-      setSupportsPWA(true);
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    const detectAppInstallation = () => {
-      window.matchMedia("(display-mode: standalone)").addEventListener("change", (e) => {
-        setIsAppInstalled(e.matches);
-      });
-    };
-
-    window.addEventListener("beforeinstallprompt", beforeInstallPromptHandler);
-    detectAppInstallation();
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", beforeInstallPromptHandler);
-    };
-  }, []);
-
-  const installPWA = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          // if ("setAppBadge" in navigator) {
-          //   setUser((prevUser) => ({
-          //     ...prevUser,
-          //     settings: {
-          //       ...prevUser.settings,
-          //       appBadge: true,
-          //     },
-          //   }));
-          // }
-
-          // Show a dialog to inform the user that the app is now running as a PWA on Windows
-          if (systemInfo.os === "Windows") {
-            setOpenInstalledDialog(true);
-          } else {
-            showToast("App installed successfully!");
-          }
-          handleClose();
-        }
-        if (choiceResult.outcome === "dismissed") {
-          showToast("Installation dismissed.", { type: "error" });
-        }
-      });
-    }
   };
 
   // const avatarButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -250,7 +156,7 @@ export const ProfileSidebar = () => {
         >
           <Logo src="/logo192.png" alt="logo" />
           <LogoText>
-            <span>Todo</span> App
+            <span>To-do</span> List App
             <span>.</span>
           </LogoText>
         </LogoContainer>
@@ -312,92 +218,6 @@ export const ProfileSidebar = () => {
           </StyledMenuItem>
         </MenuLink>
 
-        <StyledDivider />
-
-        <MenuLink to="https://github.com/maciekt07/TodoApp">
-          <StyledMenuItem translate="no">
-            <GitHub className="GitHubIcon" /> &nbsp; Github{" "}
-            {stars && (
-              <Tooltip title={`${stars} stars on Github`}>
-                <MenuLabel clr="#ff9d00">
-                  <span>
-                    <StarRounded style={{ fontSize: "18px" }} />
-                    {stars}
-                  </span>
-                </MenuLabel>
-              </Tooltip>
-            )}
-          </StyledMenuItem>
-        </MenuLink>
-
-        <MenuLink to="https://github.com/maciekt07/TodoApp/issues/new">
-          <StyledMenuItem>
-            <BugReportRounded className="BugReportRoundedIcon" /> &nbsp; Report Issue{" "}
-            {Boolean(issuesCount || issuesCount === 0) && (
-              <Tooltip title={`${issuesCount} open issues`}>
-                <MenuLabel clr="#3bb61c">
-                  <span>
-                    <AdjustRounded style={{ fontSize: "18px" }} />
-                    {issuesCount}
-                  </span>
-                </MenuLabel>
-              </Tooltip>
-            )}
-          </StyledMenuItem>
-        </MenuLink>
-
-        <MenuLink to="https://www.buymeacoffee.com/maciekt07">
-          <StyledMenuItem className="bmcMenu">
-            <BmcIcon className="bmc-icon" src={theme.darkmode ? bmcLogoLight : bmcLogo} /> &nbsp;
-            Buy me a coffee{" "}
-            {bmcSupporters && (
-              <Tooltip title={`${bmcSupporters} supporters on Buy me a coffee`}>
-                <MenuLabel clr="#f93c58">
-                  <span>
-                    <FavoriteRounded style={{ fontSize: "16px" }} />
-                    {bmcSupporters}
-                  </span>
-                </MenuLabel>
-              </Tooltip>
-            )}
-          </StyledMenuItem>
-        </MenuLink>
-
-        <StyledDivider />
-
-        {supportsPWA && !isAppInstalled && (
-          <StyledMenuItem tabIndex={0} onClick={installPWA}>
-            {systemInfo.os === "Android" ? (
-              <InstallMobileRounded />
-            ) : (
-              <InstallDesktopRounded className="InstallDesktopRoundedIcon" />
-            )}
-            &nbsp; Install App
-          </StyledMenuItem>
-        )}
-
-        {systemInfo.browser === "Safari" &&
-          systemInfo.os === "iOS" &&
-          !window.matchMedia("(display-mode: standalone)").matches && (
-            <StyledMenuItem
-              tabIndex={0}
-              onClick={() => {
-                showToast(
-                  <div style={{ display: "inline-block" }}>
-                    To install the app on iOS Safari, click on{" "}
-                    <IosShareRounded sx={{ verticalAlign: "middle", mb: "4px" }} /> and then{" "}
-                    <span style={{ fontWeight: "bold" }}>Add to Home Screen</span>.
-                  </div>,
-                  { type: "blank", duration: 8000 },
-                );
-                handleClose();
-              }}
-            >
-              <PhoneIphoneRounded />
-              &nbsp; Install App
-            </StyledMenuItem>
-          )}
-
         <StyledMenuItem
           tabIndex={0}
           onClick={() => {
@@ -441,52 +261,10 @@ export const ProfileSidebar = () => {
 
           <StyledDivider />
 
-          <CreditsContainer translate="no">
-            <span style={{ display: "flex", alignItems: "center" }}>
-              Made with &nbsp;
-              <Favorite sx={{ fontSize: "14px" }} />
-            </span>
-            <span style={{ marginLeft: "6px", marginRight: "4px" }}>by</span>
-            <a
-              style={{ textDecoration: "none", color: "inherit" }}
-              href="https://github.com/maciekt07"
-            >
-              maciekt07
-            </a>
-          </CreditsContainer>
-          <CreditsContainer>
-            {lastUpdate && (
-              <Tooltip title={timeAgo(new Date(lastUpdate))}>
-                <span>
-                  Last update:{" "}
-                  {new Intl.DateTimeFormat(navigator.language, {
-                    dateStyle: "long",
-                    timeStyle: "medium",
-                  }).format(new Date(lastUpdate))}
-                </span>
-              </Tooltip>
-            )}
-          </CreditsContainer>
+          
         </ProfileOptionsBottom>
       </StyledSwipeableDrawer>
 
-      <Dialog open={openInstalledDialog} onClose={() => setOpenInstalledDialog(false)}>
-        <CustomDialogTitle
-          title="App installed successfully!"
-          subTitle="The app is now running as a PWA."
-          icon={<DownloadDoneRounded />}
-          onClose={() => setOpenInstalledDialog(false)}
-        />
-        <DialogContent>
-          You can access it from your home screen, with offline support and features like shortcuts
-          and badges.
-        </DialogContent>
-        <DialogActions>
-          <DialogBtn onClick={() => setOpenInstalledDialog(false)}>
-            <ThumbUpRounded /> &nbsp; Got it
-          </DialogBtn>
-        </DialogActions>
-      </Dialog>
       <LogoutDialog open={openLogoutDialog} onClose={() => setOpenLogoutDialog(false)} />
       <SettingsDialog
         open={openSettings}
@@ -628,10 +406,6 @@ const StyledMenuItem = styled(MenuItem)`
     }
     & svg.BugReportRoundedIcon {
       transform: rotate(45deg) scale(1.1) translateY(-10%);
-    }
-
-    & svg.InstallDesktopRoundedIcon {
-      animation: ${InstallAppAnimation} 0.8s ease-in alternate;
     }
 
     & svg.LogoutIcon {

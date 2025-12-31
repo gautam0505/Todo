@@ -1,20 +1,5 @@
-import {
-  EmojiEmotionsRounded,
-  InfoRounded,
-  KeyboardCommandKeyRounded,
-  PaletteRounded,
-  RecordVoiceOverRounded,
-  SettingsRounded,
-} from "@mui/icons-material";
-import {
-  Box,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  Divider,
-  Tabs,
-  useTheme,
-} from "@mui/material";
+import { PaletteRounded, SettingsRounded } from "@mui/icons-material";
+import { Box, CircularProgress, Dialog, DialogContent, Divider, useTheme } from "@mui/material";
 import {
   JSX,
   lazy,
@@ -24,83 +9,15 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { CustomDialogTitle, TabGroupProvider } from "..";
+import { CustomDialogTitle } from "..";
 import { UserContext } from "../../contexts/UserContext";
 import { useResponsiveDisplay } from "../../hooks/useResponsiveDisplay";
-import { showToast } from "../../utils";
-import {
-  CloseButton,
-  CloseButtonContainer,
-  StyledTab,
-  StyledTabPanel,
-  TabHeading,
-} from "./settings.styled";
+import { CloseButton, CloseButtonContainer, TabHeading } from "./settings.styled";
 
-const settingsTabs: {
-  label: string;
-  heading?: string;
-  icon: ReactElement;
-  Component: LazyExoticComponent<() => JSX.Element>;
-}[] = [
-  {
-    label: "Appearance",
-    icon: <PaletteRounded />,
-    Component: lazy(() => import("./tabs/AppearanceTab")),
-  },
-  {
-    label: "General",
-    heading: "General Settings",
-    icon: <SettingsRounded />,
-    Component: lazy(() => import("./tabs/GeneralTab")),
-  },
-  {
-    label: "Emoji",
-    heading: "Emoji Settings",
-    icon: <EmojiEmotionsRounded />,
-    Component: lazy(() => import("./tabs/EmojiTab")),
-  },
-  {
-    label: "Read Aloud",
-    heading: "Read Aloud Settings",
-    icon: <RecordVoiceOverRounded />,
-    Component: lazy(() => import("./tabs/ReadAloudTab")),
-  },
-  {
-    label: "Shortcuts",
-    heading: "Keyboard Shortcuts",
-    icon: <KeyboardCommandKeyRounded />,
-    Component: lazy(() => import("./tabs/ShortcutsTab")),
-  },
-  {
-    label: "About",
-    heading: "About This App",
-    icon: <InfoRounded />,
-    Component: lazy(() => import("./tabs/AboutTab")),
-  },
-];
-
-// hash routing utils
-const createTabSlug = (label: string): string => label.replace(/\s+/g, "");
-
-const navigateToTab = (tabIndex: number): void => {
-  const tabSlug = createTabSlug(settingsTabs[tabIndex].label);
-  window.location.hash = `#settings/${tabSlug}`;
-};
-
-const replaceWithTab = (tabIndex: number): void => {
-  const tabSlug = createTabSlug(settingsTabs[tabIndex].label);
-  history.replaceState(
-    null,
-    "",
-    `${window.location.pathname}${window.location.search}#settings/${tabSlug}`,
-  );
-};
-
-const isSettingsHash = (hash: string): boolean => /^#settings(\/.*)?$/.test(hash);
+const AppearanceTab = lazy(() => import("./tabs/AppearanceTab"));
 
 interface SettingsProps {
   open: boolean;
@@ -110,63 +27,20 @@ interface SettingsProps {
 
 export const SettingsDialog = ({ open, onClose, handleOpen }: SettingsProps) => {
   const { user } = useContext(UserContext);
-  const [tabValue, setTabValue] = useState<number>(0);
-
-  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const navigate = useNavigate();
   const isMobile = useResponsiveDisplay();
   const muiTheme = useTheme();
 
   const handleDialogClose = useCallback(() => {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
     onClose();
     history.replaceState(null, "", window.location.pathname + window.location.search);
   }, [onClose]);
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-    navigateToTab(newValue);
-    // reset scroll instantly for new tab
-    requestAnimationFrame(() => {
-      scrollRef.current?.scrollTo({ top: 0 });
-    });
-  };
-
-  // validate tab
   const handleHashChange = useCallback(() => {
     const hash = window.location.hash;
-
-    if (!isSettingsHash(hash)) {
+    if (!hash.startsWith("#settings")) {
       onClose();
-      return;
-    }
-
-    if (hash === "#settings" || hash === "#settings/") {
-      replaceWithTab(0);
-      setTabValue(0);
-      return;
-    }
-
-    const match = hash.match(/^#settings\/(\w+)/);
-    if (!match) return -1;
-
-    const slug = match[1];
-    const tabIndex = settingsTabs.findIndex((tab) => createTabSlug(tab.label) === slug);
-
-    if (tabIndex !== -1) {
-      setTabValue(tabIndex);
-    } else {
-      const invalidSlug = hash.match(/^#settings\/(\w+)/)?.[1];
-      if (invalidSlug) {
-        showToast(`Invalid settings tab: "${invalidSlug}". Redirecting to default tab.`, {
-          type: "warning",
-        });
-        replaceWithTab(0);
-        setTabValue(0);
-      }
     }
   }, [onClose]);
 
@@ -191,8 +65,8 @@ export const SettingsDialog = ({ open, onClose, handleOpen }: SettingsProps) => 
   useEffect(() => {
     if (open) {
       const hash = window.location.hash;
-      if (!isSettingsHash(hash)) {
-        navigateToTab(0);
+      if (!hash.startsWith("#settings")) {
+        window.location.hash = "#settings";
       }
     }
   }, [open]);
@@ -275,61 +149,31 @@ export const SettingsDialog = ({ open, onClose, handleOpen }: SettingsProps) => 
         removeDivider
       />
       <Divider sx={{ mb: 2 }} />
-      <DialogContent sx={{ display: "flex", minHeight: 400, m: 0, p: 0, overflow: "hidden" }}>
-        <Tabs
-          orientation="vertical"
-          value={tabValue}
-          onChange={handleTabChange}
-          variant="scrollable"
-          aria-label="Settings tabs"
-          sx={{
-            borderRight: 1,
-            borderColor: "divider",
-          }}
+      <DialogContent
+        className="customScrollbar"
+        sx={{
+          minHeight: 400,
+          m: isMobile ? "0 12px" : "0 20px",
+          p: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+      >
+        <Suspense
+          fallback={
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              minHeight={isMobile ? 150 : 400}
+            >
+              <CircularProgress size={48} />
+            </Box>
+          }
         >
-          {settingsTabs.map((tab, index) => (
-            <StyledTab
-              icon={tab.icon}
-              label={tab.label}
-              key={index}
-              {...a11yProps(index)}
-              onClick={() => {
-                if (index === tabValue) {
-                  scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-                }
-              }}
-            />
-          ))}
-        </Tabs>
-        <Box
-          className="customScrollbar"
-          ref={scrollRef}
-          sx={{ flex: 1, p: 0, m: isMobile ? "0 12px" : "0 20px 0 20px", overflowY: "auto" }}
-        >
-          <TabGroupProvider value={tabValue} name="settings">
-            {settingsTabs.map((tab, index) => (
-              <StyledTabPanel index={index} key={index}>
-                {tabValue === index && (
-                  <Suspense
-                    fallback={
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        minHeight={isMobile ? 150 : 400}
-                      >
-                        <CircularProgress size={48} />
-                      </Box>
-                    }
-                  >
-                    <TabHeading>{tab.heading ?? tab.label}</TabHeading>
-                    <tab.Component />
-                  </Suspense>
-                )}
-              </StyledTabPanel>
-            ))}
-          </TabGroupProvider>
-        </Box>
+          <TabHeading>Appearance</TabHeading>
+          <AppearanceTab />
+        </Suspense>
       </DialogContent>
       {isMobile && (
         <CloseButtonContainer>
@@ -341,10 +185,3 @@ export const SettingsDialog = ({ open, onClose, handleOpen }: SettingsProps) => 
     </Dialog>
   );
 };
-
-function a11yProps(index: number) {
-  return {
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-  };
-}

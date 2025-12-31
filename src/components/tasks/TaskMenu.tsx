@@ -311,20 +311,7 @@ export const TaskMenu = () => {
       <LaunchRounded /> &nbsp; Task details
     </StyledMenuItem>,
 
-    ...(settings.enableReadAloud && "speechSynthesis" in window
-      ? [
-          <StyledMenuItem
-            key="read-aloud"
-            onClick={handleReadAloud}
-            disabled={
-              window.speechSynthesis &&
-              (window.speechSynthesis.speaking || window.speechSynthesis.pending)
-            }
-          >
-            <RecordVoiceOverRounded /> &nbsp; Read Aloud
-          </StyledMenuItem>,
-        ]
-      : []),
+    
 
     <StyledMenuItem
       key="share"

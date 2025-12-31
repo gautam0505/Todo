@@ -117,11 +117,7 @@ const Home = () => {
 
       <AnimatedGreeting />
 
-      {!isOnline && (
-        <Offline>
-          <WifiOff /> You're offline but you can use the app!
-        </Offline>
-      )}
+     
       {tasks.length > 0 && settings.showProgressBar && (
         <TasksCountContainer>
           <TasksCount glow={settings.enableGlow}>
