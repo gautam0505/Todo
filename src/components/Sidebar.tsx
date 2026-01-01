@@ -230,7 +230,7 @@ export const ProfileSidebar = () => {
         </StyledMenuItem>
 
         <ProfileOptionsBottom>
-          {/* <SettingsMenuItem
+          <SettingsMenuItem
             tabIndex={0}
             onClick={() => {
               setOpenSettings(true);
@@ -242,7 +242,7 @@ export const ProfileSidebar = () => {
               user.darkmode === defaultUser.darkmode &&
               user.theme === defaultUser.theme &&
               user.emojisStyle === defaultUser.emojisStyle && <PulseMenuLabel />}
-          </SettingsMenuItem> */}
+          </SettingsMenuItem>
 
           <StyledDivider />
           <MenuLink to="/user">

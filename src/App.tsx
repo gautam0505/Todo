@@ -86,45 +86,6 @@ function App() {
     });
   }, [setUser]);
 
-  useEffect(() => {
-    const setBadge = async (count: number) => {
-      if ("setAppBadge" in navigator) {
-        try {
-          await navigator.setAppBadge(count);
-        } catch (error) {
-          console.error("Failed to set app badge:", error);
-        }
-      }
-    };
-
-    const clearBadge = async () => {
-      if ("clearAppBadge" in navigator) {
-        try {
-          await navigator.clearAppBadge();
-        } catch (error) {
-          console.error("Failed to clear app badge:", error);
-        }
-      }
-    };
-
-    const displayAppBadge = async () => {
-      if (user.settings.appBadge) {
-        if ((await Notification.requestPermission()) === "granted") {
-          const incompleteTasksCount = user.tasks.filter((task) => !task.done).length;
-          if (!isNaN(incompleteTasksCount)) {
-            setBadge(incompleteTasksCount);
-          }
-        }
-      } else {
-        clearBadge();
-      }
-    };
-
-    if ("setAppBadge" in navigator) {
-      displayAppBadge();
-    }
-  }, [user.settings.appBadge, user.tasks]);
-
   const getMuiTheme = useCallback((): Theme => {
     if (systemTheme === "unknown") {
       return Themes[0].MuiTheme;

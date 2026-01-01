@@ -102,7 +102,7 @@ export default function AppearanceTab() {
           }));
         }}
       />
-      {/* <SectionHeading>Theme Selection</SectionHeading>
+      <SectionHeading>Theme Selection</SectionHeading>
       <StyledSelect
         value={user.theme}
         onChange={handleAppThemeChange}
@@ -126,30 +126,9 @@ export default function AppearanceTab() {
             {theme.name}
           </StyledMenuItem>
         ))}
-      </StyledSelect> */}
-      {/* <SectionHeading>Reduce Motion Options</SectionHeading>
-      <SectionDescription>
-        Reduce animations and transitions for a more stable experience.
-      </SectionDescription> */}
-      {/* <CustomRadioGroup
-        options={reduceMotionOptions}
-        value={reduceMotionValue}
-        onChange={(val) => {
-          setReduceMotionValue(val);
-          setUser((prevUser) => ({
-            ...prevUser,
-            settings: {
-              ...prevUser.settings,
-              reduceMotion: val,
-            },
-          }));
-        }}
-      /> */}
-      {/* <CustomSwitch
-        settingKey="enableGlow"
-        header="Enable Glow Effect"
-        text="Add a soft glow to tasks for better visibility."
-      /> */}
+      </StyledSelect>
+     
+      
     </>
   );
 }
