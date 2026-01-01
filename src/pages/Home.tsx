@@ -121,7 +121,7 @@ const Home = () => {
       {tasks.length > 0 && settings.showProgressBar && (
         <TasksCountContainer>
           <TasksCount glow={settings.enableGlow}>
-            <TaskCountClose
+            {/* <TaskCountClose
               size="small"
               onClick={() => {
                 updateShowProgressBar(false);
@@ -141,7 +141,7 @@ const Home = () => {
               }}
             >
               <CloseRounded />
-            </TaskCountClose>
+            </TaskCountClose> */}
             <Box sx={{ position: "relative", display: "inline-flex" }}>
               <StyledProgress
                 variant="determinate"
