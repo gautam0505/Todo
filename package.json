@@ -6,7 +6,7 @@
   },
   "private": true,
   "type": "module",
-  "homepage": "https://react-cool-todo-app.netlify.app/",
+  "homepage": "https://todo-ga.netlify.app/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gautam0505/Todo.git"

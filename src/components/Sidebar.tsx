@@ -35,8 +35,6 @@ import bmcLogoLight from "../assets/bmc-logo-light.svg";
 import bmcLogo from "../assets/bmc-logo.svg";
 import { defaultUser } from "../constants/defaultUser";
 import { UserContext } from "../contexts/UserContext";
-import { fetchBMCInfo } from "../services/bmcApi";
-import { fetchGitHubInfo } from "../services/githubApi";
 import { DialogBtn, UserAvatar, pulseAnimation, reduceMotion, ring } from "../styles";
 import { ColorPalette } from "../theme/themeConfig";
 import {
