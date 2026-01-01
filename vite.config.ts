@@ -48,7 +48,13 @@ export default defineConfig({
         type: "module",
       },
       registerType: "prompt",
-      workbox, // workbox.config.ts
+      workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
+        runtimeCaching: [
+          // ...your existing runtime caching config...
+        ],
+      },
       includeAssets: ["**/*", "sw.js", "!splash-screens/**/*"],
     }),
   ],
