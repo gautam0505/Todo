@@ -26,7 +26,7 @@ if (
   process.env.NODE_ENV !== "development"
 ) {
   showToast("Loading", {
-    duration: Infinity,
+    duration: 5000,
     type: "blank",
     id: "initial-offline-preparation",
     icon: <CircularProgress size={20} thickness={4} />,

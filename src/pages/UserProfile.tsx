@@ -208,7 +208,7 @@ const UserProfile = () => {
     <>
       <TopBar title="User Profile" />
       <Container glow={user.settings.enableGlow}>
-        <Tooltip title="App Settings">
+        {/* <Tooltip title="App Settings">
           <IconButton
             onClick={() => (window.location.hash = "#settings")}
             aria-label="Settings"
@@ -221,7 +221,7 @@ const UserProfile = () => {
           >
             <Settings fontSize="large" />
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title={profilePicture ? "Change profile picture" : "Add profile picture"}>
           <Badge
             overlap="circular"
