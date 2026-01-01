@@ -1,4 +1,4 @@
-import { GitHub, PaletteRounded, SettingsRounded } from "@mui/icons-material";
+import { PaletteRounded, SettingsRounded } from "@mui/icons-material";
 import { Box, CircularProgress, Dialog, DialogContent, Divider, useTheme } from "@mui/material";
 import {
   JSX,
@@ -18,7 +18,6 @@ import { useResponsiveDisplay } from "../../hooks/useResponsiveDisplay";
 import { CloseButton, CloseButtonContainer, TabHeading } from "./settings.styled";
 
 const AppearanceTab = lazy(() => import("./tabs/AppearanceTab"));
-const GithubTab = lazy(() => import("./tabs/GithubTab"));
 
 interface SettingsProps {
   open: boolean;
@@ -174,12 +173,6 @@ export const SettingsDialog = ({ open, onClose, handleOpen }: SettingsProps) => 
         >
           <TabHeading>Appearance</TabHeading>
           <AppearanceTab />
-          <Divider sx={{ my: 2 }} />
-          <TabHeading>
-            <GitHub sx={{ fontSize: 20, mr: 0.5, mb: "-3px" }} />
-            GitHub
-          </TabHeading>
-          <GithubTab />
         </Suspense>
       </DialogContent>
       {isMobile && (

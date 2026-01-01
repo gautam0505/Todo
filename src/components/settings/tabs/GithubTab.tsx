@@ -1,101 +1,41 @@
-import { ContentCopyRounded } from "@mui/icons-material";
-import {
-  Alert,
-  Box,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
-import React from "react";
+import { Alert, AlertTitle, Box, Link, Typography } from "@mui/material";
+import { GitHub } from "@mui/icons-material";
 
-const CodeBlock = ({ children }: { children: React.ReactNode }) => {
-  const [copied, setCopied] = useState(false);
-
-  const textToCopy = Array.isArray(children)
-    ? children.join("") // handles ["text", variable]
-    : String(children); // handles string | number | JSX
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
+export default function GithubTab() {
   return (
-    <Paper
-      variant="outlined"
-      sx={{
-        p: 1,
-        backgroundColor: (theme) =>
-          theme.palette.mode === "dark"
-            ? "rgba(0,0,0,0.3)"
-            : "rgba(0,0,0,0.05)",
-        fontFamily: "monospace",
-        whiteSpace: "pre-wrap",
-        wordBreak: "break-all",
-        position: "relative",
-      }}
-    >
-      <code>{children}</code>
-      <Tooltip title={copied ? "Copied!" : "Copy"}>
-        <IconButton
-          size="small"
-          onClick={handleCopy}
-          sx={{ position: "absolute", top: 8, right: 8 }}
-        >
-          <ContentCopyRounded fontSize="inherit" />
-        </IconButton>
-      </Tooltip>
-    </Paper>
-  );
-};
-
-const GithubTab = () => {
-  const correctUrl = "https://github.com/gautam0505/Todo.git";
-
-  return (
-    <Stack spacing={2}>
-      <Alert severity="error">
-        <Typography variant="body2">
-          The error `remote origin already exists` occurs when you try to use
-          `git remote add` for a remote that is already configured.
-        </Typography>
-      </Alert>
-
-      <Typography variant="body1">
-        To fix this, you need to update the URL of your existing 'origin'
-        remote.
+    <Box>
+      <Typography
+        variant="h6"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          mb: 2,
+        }}
+      >
+        <GitHub /> GitHub Repository
       </Typography>
 
-      <Box>
-        <Typography variant="body2" gutterBottom>
-          1. Use the `set-url` command to change the remote&apos;s URL:
-        </Typography>
-        <CodeBlock>git remote set-url origin {correctUrl}</CodeBlock>
-      </Box>
+      <Alert severity="info">
+        <AlertTitle>Open Source Project</AlertTitle>
+        This is an open-source project. You can view the source code, report issues, or contribute
+        on GitHub.
+      </Alert>
 
-      <Box>
-        <Typography variant="body2" gutterBottom>
-          2. Verify that the remote URL has been changed:
-        </Typography>
-        <CodeBlock>git remote -v</CodeBlock>
-        <Typography variant="body2" sx={{ mt: 1 }}>
-          The output should now show your correct repository URL for both fetch
-          and push.
-        </Typography>
+      <Box sx={{ mt: 2 }}>
+        <Link
+          href="https://github.com/gautam0505/Todo"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <GitHub /> View on GitHub
+        </Link>
       </Box>
-
-      <Box>
-        <Typography variant="body2" gutterBottom>
-          3. Now, you should be able to push your changes:
-        </Typography>
-        <CodeBlock>git push -u origin main</CodeBlock>
-      </Box>
-    </Stack>
+    </Box>
   );
-};
-
-export default GithubTab;
+}
